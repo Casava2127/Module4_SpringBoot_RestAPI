@@ -4,6 +4,7 @@ import com.ra.model.dto.product.ProductRequestDTO;
 import com.ra.model.dto.product.ProductResponseDTO;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface ProductService01 {
     /**
@@ -17,7 +18,7 @@ public interface ProductService01 {
      * @param id - ID của sản phẩm
      * @return ProductResponseDTO - Sản phẩm nếu tìm thấy, null nếu không có
      */
-    ProductResponseDTO findById(Long id);
+    Optional<ProductResponseDTO> findById(Long id);
 
     /**
      * Thêm mới sản phẩm từ DTO

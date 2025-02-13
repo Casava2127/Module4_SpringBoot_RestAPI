@@ -10,11 +10,8 @@ import org.antlr.v4.runtime.misc.NotNull;
 @Builder           // Hỗ trợ builder pattern
 
 public class ProductRequestDTO {
-
-
     private String productName;
- // Giá không được âm
-    private Double price;
+    private Double price; // Giá không được âm
     private String image; // Ảnh có thể null
     private boolean status = true; // Mặc định sản phẩm đang hoạt động
     private Long categoryId; // Chỉ nhận ID của danh mục, không nhận cả Entity
