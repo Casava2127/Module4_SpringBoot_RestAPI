@@ -8,7 +8,7 @@ import org.springframework.http.HttpStatus; // Import HttpStatus để trả v�
 import org.springframework.http.ResponseEntity; // Import ResponseEntity để tạo phản hồi HTTP
 import org.springframework.web.bind.annotation.*; // Import các annotation của Spring Boot
 import java.util.List; // Import List để làm việc với danh sách dữ liệu
-
+// dinh nghia cac API endPoint
 @RestController // Đánh dấu lớp này là RESTful Controller, xử lý API
 @RequestMapping("/api/v1/categories") // Định nghĩa URL gốc cho tất cả API trong controller này
 public class CategoryController {

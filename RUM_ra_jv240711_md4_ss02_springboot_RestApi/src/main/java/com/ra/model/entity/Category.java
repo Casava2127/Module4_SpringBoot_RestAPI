@@ -5,7 +5,7 @@ import jakarta.persistence.*;
 
 import lombok.*;
 
-@Entity
+@Entity // cai nay la JPA annotation
 @Table(name = "categories")
 @NoArgsConstructor
 @AllArgsConstructor

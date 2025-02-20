@@ -26,29 +26,29 @@ public class UploadFileController {
      */
     @PostMapping("") // Xử lý HTTP POST tại endpoint "/api/v1/upload"
     public ResponseEntity<String> upload(
-            @RequestParam("file") MultipartFile file, // Nhận file từ client
-            @RequestParam(value = "folder", required = false) String folder // Nhận tên thư mục (tùy chọn)
+            @RequestParam("file") MultipartFile file, // Nhận file từ client với key "file" trong request
+            @RequestParam(value = "folder", required = false) String folder // Nhận tên thư mục (tùy chọn), nếu không có sẽ để mặc định
     ) {
         try {
             // Kiểm tra nếu file rỗng
             if (file.isEmpty()) {
-                return new ResponseEntity<>("File is empty!", HttpStatus.BAD_REQUEST); // Trả về lỗi 400
+                return new ResponseEntity<>("File is empty!", HttpStatus.BAD_REQUEST); // Trả về lỗi 400 BAD REQUEST
             }
 
             // Kiểm tra định dạng file hợp lệ
-            String contentType = file.getContentType();
-            if (!isValidFileType(contentType)) {
-                return new ResponseEntity<>("Invalid file type!", HttpStatus.UNSUPPORTED_MEDIA_TYPE); // Lỗi 415
+            String contentType = file.getContentType(); // Lấy loại MIME của file
+            if (!isValidFileType(contentType)) { // Nếu không hợp lệ
+                return new ResponseEntity<>("Invalid file type!", HttpStatus.UNSUPPORTED_MEDIA_TYPE); // Trả về lỗi 415 UNSUPPORTED MEDIA TYPE
             }
 
-            // Upload file lên Cloudinary
-            String fileUrl = uploadService.uploadFile(file, folder);
+            // Upload file lên Cloudinary thông qua service
+            String fileUrl = uploadService.uploadFile(file, folder); // Gọi service để upload file
 
-            // Trả về URL file nếu upload thành công (201 Created)
+            // Trả về URL file nếu upload thành công với mã 201 CREATED
             return new ResponseEntity<>(fileUrl, HttpStatus.CREATED);
 
-        } catch (Exception e) {
-            // Xử lý lỗi khi upload file thất bại
+        } catch (Exception e) { // Bắt lỗi nếu có lỗi trong quá trình upload
+            // Trả về thông báo lỗi với mã 500 INTERNAL SERVER ERROR
             return new ResponseEntity<>("Upload failed: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
@@ -60,7 +60,7 @@ public class UploadFileController {
      * @return true nếu file hợp lệ, false nếu không hợp lệ
      */
     private boolean isValidFileType(String contentType) {
-        return contentType != null && ( // Đảm bảo contentType không null
+        return contentType != null && ( // Đảm bảo contentType không null trước khi kiểm tra
                 contentType.startsWith("image/") || // Cho phép file ảnh (jpg, png, etc.)
                         contentType.startsWith("video/") || // Cho phép file video (mp4, avi, etc.)
                         contentType.equals("application/pdf") // Cho phép file PDF
