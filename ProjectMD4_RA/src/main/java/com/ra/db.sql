@@ -1,8 +1,8 @@
 -- Nếu cần, xóa cơ sở dữ liệu cũ (chỉ dùng trong môi trường thử nghiệm)
-DROP DATABASE IF EXISTS course_management1;
+DROP DATABASE IF EXISTS course_management;
 
 -- Tạo cơ sở dữ liệu và sử dụng nó
-CREATE DATABASE course_management1;
+CREATE DATABASE course_management;
 USE course_management1;
 
 -------------------------------------------------
