@@ -1,7 +1,6 @@
 package com.ra.model.dto.auth;
 
 import lombok.*;
-import java.util.Date;
 
 @Getter
 @Setter
@@ -9,9 +8,6 @@ import java.util.Date;
 @AllArgsConstructor
 @Builder
 public class AuthResponseDTO {
-    private Long userId;
-    private String username;
-    private String token;
-    private Date issuedAt;
-    private Date expiresAt;
+    private String accessToken;
+    private String tokenType; // Ví dụ: "Bearer"
 }

@@ -12,4 +12,7 @@ public interface NotificationService {
     NotificationResponseDTO save(NotificationRequestDTO notificationDTO);
     NotificationResponseDTO update(Long id, NotificationRequestDTO notificationDTO);
     boolean delete(Long id);
+
+    List<NotificationResponseDTO> getUserNotifications(Long userId);
+    boolean markNotificationAsRead(Long userId, Long notificationId);
 }

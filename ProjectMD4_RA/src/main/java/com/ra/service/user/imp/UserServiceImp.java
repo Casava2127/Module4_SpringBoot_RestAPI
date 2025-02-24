@@ -1,5 +1,6 @@
 package com.ra.service.user.imp;
 
+import com.ra.model.dto.user.ChangePasswordDTO;
 import com.ra.model.dto.user.UserRequestDTO;
 import com.ra.model.dto.user.UserResponseDTO;
 import com.ra.model.entity.User;
@@ -63,6 +64,33 @@ public class UserServiceImp implements UserService {
             return false;
         }
         userRepository.deleteById(id);
+        return true;
+    }
+    @Override
+    public boolean changePassword(Long userId, ChangePasswordDTO changePasswordDTO) {
+        Optional<User> optionalUser = userRepository.findById(userId);
+        if (optionalUser.isEmpty()) {
+            throw new RuntimeException("User not found!");
+        }
+        User user = optionalUser.get();
+        System.out.println("Stored password: " + user.getPassword());
+        System.out.println("Provided old password: " + changePasswordDTO.getOldPassword());
+
+        // So sánh mật khẩu raw trực tiếp
+        if (!changePasswordDTO.getOldPassword().equals(user.getPassword())) {
+            throw new RuntimeException("Old password is incorrect!");
+        }
+
+        // Kiểm tra mật khẩu mới và xác nhận mật khẩu
+        if (!changePasswordDTO.getNewPassword().equals(changePasswordDTO.getConfirmNewPassword())) {
+            throw new RuntimeException("New password and confirmation do not match!");
+        }
+
+
+
+        // Cập nhật mật khẩu dưới dạng plain text (không mã hóa)
+        user.setPassword(changePasswordDTO.getNewPassword());
+        userRepository.save(user);
         return true;
     }
 

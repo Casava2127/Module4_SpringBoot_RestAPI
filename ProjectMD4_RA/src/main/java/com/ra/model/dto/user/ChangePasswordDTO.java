@@ -8,7 +8,6 @@ import lombok.*;
 @AllArgsConstructor
 @Builder
 public class ChangePasswordDTO {
-    private Long userId;
     private String oldPassword;
     private String newPassword;
     private String confirmNewPassword;

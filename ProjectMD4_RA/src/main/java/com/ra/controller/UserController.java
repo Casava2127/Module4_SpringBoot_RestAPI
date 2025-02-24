@@ -1,5 +1,6 @@
 package com.ra.controller;
 
+import com.ra.model.dto.user.ChangePasswordDTO;
 import com.ra.model.dto.user.UserRequestDTO;
 import com.ra.model.dto.user.UserResponseDTO;
 import com.ra.service.user.UserService;
@@ -9,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import java.security.Principal;
 import java.util.List;
 import java.util.Optional;
 
@@ -56,5 +58,22 @@ public class UserController {
     public ResponseEntity<Void> delete(@PathVariable Long id) {
         boolean deleted = userService.delete(id);
         return deleted ? new ResponseEntity<>(HttpStatus.NO_CONTENT) : new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    }
+
+    @PutMapping("/change-password")
+    public ResponseEntity<String> changePassword(
+            Principal principal,
+            @RequestBody @Validated ChangePasswordDTO changePasswordDTO) {
+        Long userId = getUserIdFromPrincipal(principal);
+        boolean success = userService.changePassword(userId, changePasswordDTO);
+        return success ? ResponseEntity.ok("Password updated successfully!")
+                : ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Password change failed!");
+    }
+
+    private Long getUserIdFromPrincipal(Principal principal) {
+        // Giả sử `principal.getName()` là username, cần tìm userId từ username.
+        // Ở đây cần có UserService hoặc UserRepository để lấy userId.
+        // Để đơn giản, giả sử userId = 1 (cần thay thế bằng cách truy vấn thực tế).
+        return 13L;  // câần sửa lại - đay chỉ là mawcjh định
     }
 }

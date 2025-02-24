@@ -11,26 +11,22 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api.myservice.com/v1/auth")
+@RequestMapping("/api/v1/auth")
 @Validated
 public class AuthController {
 
     @Autowired
     private AuthService authService;
 
-    // Đăng ký tài khoản mới
     @PostMapping("/sign-up")
-    public ResponseEntity<AuthResponseDTO> signUp(@RequestBody @Validated SignUpRequestDTO signUpDTO) {
-        AuthResponseDTO response = authService.register(signUpDTO);
-        return new ResponseEntity<>(response, HttpStatus.CREATED);
+    public ResponseEntity<String> signUp(@RequestBody @Validated SignUpRequestDTO signUpRequest) {
+        authService.signUp(signUpRequest);
+        return new ResponseEntity<>("User registered successfully!", HttpStatus.CREATED);
     }
 
-    // Đăng nhập
     @PostMapping("/sign-in")
-    public ResponseEntity<AuthResponseDTO> signIn(@RequestBody @Validated SignInRequestDTO signInDTO) {
-        AuthResponseDTO response = authService.authenticate(signInDTO);
-        return (response != null)
-                ? new ResponseEntity<>(response, HttpStatus.OK)
-                : new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+    public ResponseEntity<AuthResponseDTO> signIn(@RequestBody @Validated SignInRequestDTO signInRequest) {
+        AuthResponseDTO response = authService.signIn(signInRequest);
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 }

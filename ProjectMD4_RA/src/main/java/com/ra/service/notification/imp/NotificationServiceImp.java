@@ -63,6 +63,32 @@ public class NotificationServiceImp implements NotificationService {
         return true;
     }
 
+    @Override
+    public List<NotificationResponseDTO> getUserNotifications(Long userId) {
+        List<Notification> notifications = notificationRepository.findByUserUserId(userId);
+        return notifications.stream()
+                .map(this::convertToDTO)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public boolean markNotificationAsRead(Long userId, Long notificationId) {
+        Optional<Notification> notificationOpt = notificationRepository.findById(notificationId);
+        if (notificationOpt.isEmpty()) {
+            return false;
+        }
+        Notification notification = notificationOpt.get();
+        // Kiểm tra nếu thông báo không thuộc về user, trả về false
+        if (!notification.getUser().getUserId().equals(userId)) {
+            return false;
+        }
+        notification.setRead(true);
+        notificationRepository.save(notification);
+        return true;
+    }
+
+
+
     private NotificationResponseDTO convertToDTO(Notification notification) {
         return NotificationResponseDTO.builder()
                 .notificationId(notification.getNotificationId())

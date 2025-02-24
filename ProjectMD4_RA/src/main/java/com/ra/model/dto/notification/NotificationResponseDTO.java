@@ -1,7 +1,6 @@
 package com.ra.model.dto.notification;
 
 import lombok.*;
-
 import java.time.LocalDateTime;
 
 @Getter

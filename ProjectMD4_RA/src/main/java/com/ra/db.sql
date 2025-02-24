@@ -4,6 +4,8 @@ DROP DATABASE IF EXISTS course_management;
 -- Tạo cơ sở dữ liệu và sử dụng nó
 CREATE DATABASE course_management;
 USE course_management;
+INSERT INTO roles (role_name) VALUES ('STUDENT'), ('ADMIN'), ('INSTRUCTOR');
+
 
 -------------------------------------------------
 -- 1. Bảng người dùng (users)
