@@ -27,7 +27,7 @@ public class Submission {
     @Column(name = "file_url", length = 255)
     private String fileUrl;
 
-    @Column(precision = 5, scale = 2)
+    @Column(precision = 5)
     private Double grade; // ví dụ từ 0.00 đến 10.00
 
     @Column(columnDefinition = "TEXT")

@@ -25,7 +25,7 @@ public class Payment {
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
-    @Column(nullable = false, precision = 10, scale = 2)
+    @Column(nullable = false, precision = 10)
     private BigDecimal amount;
 
     @Enumerated(EnumType.STRING)

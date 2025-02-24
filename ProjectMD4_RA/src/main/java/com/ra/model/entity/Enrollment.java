@@ -24,7 +24,7 @@ public class Enrollment {
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
-    @Column(name = "total_price", nullable = false, precision = 10, scale = 2)
+    @Column(name = "total_price", nullable = false, precision = 10 )
     private BigDecimal totalPrice;
 
     @Enumerated(EnumType.STRING)

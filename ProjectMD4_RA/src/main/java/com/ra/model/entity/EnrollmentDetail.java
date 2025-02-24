@@ -28,7 +28,7 @@ public class EnrollmentDetail {
     @Column(name = "course_name", length = 100)
     private String courseName;
 
-    @Column(name = "unit_price", precision = 10, scale = 2)
+    @Column(name = "unit_price", precision = 10)
     private BigDecimal unitPrice;
 
     @Column(nullable = false)
