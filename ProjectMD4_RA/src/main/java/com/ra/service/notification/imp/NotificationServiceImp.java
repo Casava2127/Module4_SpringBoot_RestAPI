@@ -77,15 +77,19 @@ public class NotificationServiceImp implements NotificationService {
         if (notificationOpt.isEmpty()) {
             return false;
         }
+
         Notification notification = notificationOpt.get();
-        // Kiểm tra nếu thông báo không thuộc về user, trả về false
-        if (!notification.getUser().getUserId().equals(userId)) {
+
+        // Kiểm tra nếu thông báo không có user hoặc không thuộc về userId, trả về false
+        if (notification.getUser() == null || !notification.getUser().getUserId().equals(userId)) {
             return false;
         }
+
         notification.setRead(true);
         notificationRepository.save(notification);
         return true;
     }
+
 
 
 
@@ -101,14 +105,19 @@ public class NotificationServiceImp implements NotificationService {
     }
 
     private Notification convertToEntity(NotificationRequestDTO notificationDTO) {
-        User user = userRepository.findById(notificationDTO.getUserId()).orElse(null);
+        Optional<User> userOpt = userRepository.findById(notificationDTO.getUserId());
+
+        if (userOpt.isEmpty()) {
+            throw new IllegalArgumentException("User with ID " + notificationDTO.getUserId() + " not found.");
+        }
 
         return Notification.builder()
-                .user(user)
+                .user(userOpt.get())
                 .title(notificationDTO.getTitle())
                 .message(notificationDTO.getMessage())
                 .isRead(notificationDTO.isRead())
                 .createdAt(LocalDateTime.now())
                 .build();
     }
+
 }

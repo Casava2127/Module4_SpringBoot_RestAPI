@@ -1,0 +1,59 @@
+Dưới đây là các mẫu API để bạn test trên Postman cho chức năng đăng ký và đăng nhập tài khoản:
+
+---
+
+### 1️⃣ **Đăng ký tài khoản**
+**Method:** `POST`  
+**URL:** `http://localhost:8080/api/v1/auth/sign-up`  
+**Headers:**
+```json
+Content-Type: application/json
+```
+**Body (JSON):**
+```json
+{
+  "username": "newuser123",
+  "email": "newuser@example.com",
+  "fullname": "New User",
+  "password": "password123",
+  "phone": "0123456789",
+  "address": "123 New Street",
+  "avatar": "https://example.com/avatar.jpg"
+}
+```
+**Response (201 Created):**
+```json
+"User registered successfully!"
+```
+---
+
+### 2️⃣ **Đăng nhập**
+**Method:** `POST`  
+**URL:** `http://localhost:8080/api/v1/auth/sign-in`  
+**Headers:**
+```json
+Content-Type: application/json
+```
+**Body (JSON):**
+```json
+{
+  "username": "newuser123",
+  "password": "password123"
+}
+```
+**Response (200 OK - nếu đăng nhập thành công):**
+```json
+{
+  "accessToken": "fake-jwt-token-1740395288274",
+  "tokenType": "Bearer"
+}
+```
+**Response (401 Unauthorized - nếu đăng nhập thất bại):**
+```json
+{
+  "error": "Invalid username or password"
+}
+```
+---
+
+Bạn có thể copy và dán các request này vào Postman để test API. Nếu có JWT thực sự, bạn sẽ cần dùng access token này để test các API yêu cầu xác thực sau này. 🚀

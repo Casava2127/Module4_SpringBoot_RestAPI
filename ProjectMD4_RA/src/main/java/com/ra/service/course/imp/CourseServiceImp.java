@@ -3,8 +3,6 @@ package com.ra.service.course.imp;
 import com.ra.model.dto.course.CourseRequestDTO;
 import com.ra.model.dto.course.CourseResponseDTO;
 import com.ra.model.entity.Course;
-import com.ra.model.entity.Category;
-import com.ra.model.entity.User;
 import com.ra.repository.CourseRepository;
 import com.ra.repository.CategoryRepository;
 import com.ra.repository.UserRepository;
@@ -30,10 +28,13 @@ public class CourseServiceImp implements CourseService {
 
     @Override
     public List<CourseResponseDTO> findAll() {
-        return courseRepository.findAll().stream()
+        List<Course> courses = courseRepository.findAll();
+        System.out.println("Danh sách khóa học: " + courses);
+        return courses.stream()
                 .map(this::convertToDTO)
                 .collect(Collectors.toList());
     }
+
 
     @Override
     public Optional<CourseResponseDTO> findById(Long id) {
@@ -60,15 +61,28 @@ public class CourseServiceImp implements CourseService {
         existingCourse.setAvailableSlots(courseDTO.getAvailableSlots());
         existingCourse.setDescription(courseDTO.getDescription());
 
+        // Kiểm tra Category có tồn tại không trước khi cập nhật
         if (courseDTO.getCategoryId() != null) {
-            categoryRepository.findById(courseDTO.getCategoryId()).ifPresent(existingCourse::setCategory);
+            categoryRepository.findById(courseDTO.getCategoryId())
+                    .ifPresentOrElse(existingCourse::setCategory,
+                            () -> {
+                                throw new RuntimeException("Category with ID " + courseDTO.getCategoryId() + " not found");
+                            });
         }
+
+        // Kiểm tra Instructor có tồn tại không trước khi cập nhật
         if (courseDTO.getInstructorId() != null) {
-            userRepository.findById(courseDTO.getInstructorId()).ifPresent(existingCourse::setInstructor);
+            userRepository.findById(courseDTO.getInstructorId())
+                    .ifPresentOrElse(existingCourse::setInstructor,
+                            () -> {
+                                throw new RuntimeException("Instructor with ID " + courseDTO.getInstructorId() + " not found");
+                            });
         }
+
         Course updatedCourse = courseRepository.save(existingCourse);
         return convertToDTO(updatedCourse);
     }
+
 
     @Override
     public boolean delete(Long id) {
@@ -142,12 +156,26 @@ public class CourseServiceImp implements CourseService {
         course.setImage(courseDTO.getImage());
         course.setAvailableSlots(courseDTO.getAvailableSlots());
         course.setDescription(courseDTO.getDescription());
+
+        // Kiểm tra Category có tồn tại không trước khi gán
         if (courseDTO.getCategoryId() != null) {
-            categoryRepository.findById(courseDTO.getCategoryId()).ifPresent(course::setCategory);
+            categoryRepository.findById(courseDTO.getCategoryId())
+                    .ifPresentOrElse(course::setCategory,
+                            () -> {
+                                throw new RuntimeException("Category with ID " + courseDTO.getCategoryId() + " not found");
+                            });
         }
+
+        // Kiểm tra Instructor có tồn tại không trước khi gán
         if (courseDTO.getInstructorId() != null) {
-            userRepository.findById(courseDTO.getInstructorId()).ifPresent(course::setInstructor);
+            userRepository.findById(courseDTO.getInstructorId())
+                    .ifPresentOrElse(course::setInstructor,
+                            () -> {
+                                throw new RuntimeException("Instructor with ID " + courseDTO.getInstructorId() + " not found");
+                            });
         }
+
         return course;
     }
+
 }

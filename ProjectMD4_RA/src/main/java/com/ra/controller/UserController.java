@@ -74,6 +74,6 @@ public class UserController {
         // Giả sử `principal.getName()` là username, cần tìm userId từ username.
         // Ở đây cần có UserService hoặc UserRepository để lấy userId.
         // Để đơn giản, giả sử userId = 1 (cần thay thế bằng cách truy vấn thực tế).
-        return 13L;  // câần sửa lại - đay chỉ là mawcjh định
+        return 14L;  // câần sửa lại - đay chỉ là mawcjh định
     }
 }

@@ -17,7 +17,7 @@ import java.util.Optional;
 
 @RestController
 
-@RequestMapping(" /api/v1/courses/categories")
+@RequestMapping("/api/v1/courses/categories")
 @Validated
 public class CategoryController {
     @Autowired
