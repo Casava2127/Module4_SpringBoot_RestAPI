@@ -19,4 +19,7 @@ public class UserResponseDTO {
     private String address;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
+
+    public UserResponseDTO(long l, String johnUpdated, String mail, String active) {
+    }
 }

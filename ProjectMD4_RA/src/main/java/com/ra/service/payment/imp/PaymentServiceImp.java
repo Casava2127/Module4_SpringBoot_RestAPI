@@ -2,9 +2,7 @@ package com.ra.service.payment.imp;
 
 import com.ra.model.dto.payment.PaymentRequestDTO;
 import com.ra.model.dto.payment.PaymentResponseDTO;
-import com.ra.model.entity.Enrollment;
-import com.ra.model.entity.Payment;
-import com.ra.model.entity.User;
+import com.ra.model.entity.*;
 import com.ra.repository.EnrollmentRepository;
 import com.ra.repository.PaymentRepository;
 import com.ra.repository.UserRepository;
@@ -53,8 +51,8 @@ public class PaymentServiceImp implements PaymentService {
 
         Payment payment = optionalPayment.get();
         payment.setAmount(paymentDTO.getAmount());
-        payment.setPaymentMethod(paymentDTO.getPaymentMethod());
-        payment.setStatus(paymentDTO.getStatus());
+        payment.setPaymentMethod(PaymentMethod.valueOf(paymentDTO.getPaymentMethod()));
+        payment.setStatus(PaymentStatus.valueOf(paymentDTO.getStatus()));
         payment.setPaidAt(paymentDTO.getPaidAt());
 
         Payment updatedPayment = paymentRepository.save(payment);
@@ -74,23 +72,25 @@ public class PaymentServiceImp implements PaymentService {
                 .enrollmentId(payment.getEnrollment().getEnrollmentId())
                 .userName(payment.getUser().getUsername())
                 .amount(payment.getAmount())
-                .paymentMethod(payment.getPaymentMethod())
-                .status(payment.getStatus())
+                .paymentMethod(String.valueOf(payment.getPaymentMethod()))
+                .status(String.valueOf(payment.getStatus()))
                 .paidAt(payment.getPaidAt())
                 .createdAt(payment.getCreatedAt())
                 .build();
     }
 
     private Payment convertToEntity(PaymentRequestDTO paymentDTO) {
-        Enrollment enrollment = enrollmentRepository.findById(paymentDTO.getEnrollmentId()).orElse(null);
-        User user = userRepository.findById(paymentDTO.getUserId()).orElse(null);
+        Enrollment enrollment = enrollmentRepository.findById(paymentDTO.getEnrollmentId())
+                .orElseThrow(() -> new RuntimeException("Enrollment not found"));
+        User user = userRepository.findById(paymentDTO.getUserId())
+                .orElseThrow(() -> new RuntimeException("User not found"));
 
         return Payment.builder()
                 .enrollment(enrollment)
                 .user(user)
                 .amount(paymentDTO.getAmount())
-                .paymentMethod(paymentDTO.getPaymentMethod())
-                .status(paymentDTO.getStatus())
+                .paymentMethod(PaymentMethod.valueOf(paymentDTO.getPaymentMethod()))
+                .status(PaymentStatus.valueOf(paymentDTO.getStatus()))
                 .paidAt(paymentDTO.getPaidAt())
                 .createdAt(java.time.LocalDateTime.now())
                 .build();

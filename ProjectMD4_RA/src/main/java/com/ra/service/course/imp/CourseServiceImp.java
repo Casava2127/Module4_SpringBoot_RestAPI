@@ -18,6 +18,7 @@ import java.util.stream.Collectors;
 
 @Service
 public class CourseServiceImp implements CourseService {
+
     @Autowired
     private CourseRepository courseRepository;
 
@@ -52,7 +53,6 @@ public class CourseServiceImp implements CourseService {
         if (!optionalCourse.isPresent()) {
             return null;
         }
-
         Course existingCourse = optionalCourse.get();
         existingCourse.setCourseName(courseDTO.getCourseName());
         existingCourse.setPrice(courseDTO.getPrice());
@@ -63,11 +63,9 @@ public class CourseServiceImp implements CourseService {
         if (courseDTO.getCategoryId() != null) {
             categoryRepository.findById(courseDTO.getCategoryId()).ifPresent(existingCourse::setCategory);
         }
-
         if (courseDTO.getInstructorId() != null) {
             userRepository.findById(courseDTO.getInstructorId()).ifPresent(existingCourse::setInstructor);
         }
-
         Course updatedCourse = courseRepository.save(existingCourse);
         return convertToDTO(updatedCourse);
     }
@@ -81,16 +79,59 @@ public class CourseServiceImp implements CourseService {
         return true;
     }
 
+    // Dummy implementation: Sử dụng các tiêu chí giả định để lọc danh sách
+    @Override
+    public List<CourseResponseDTO> searchCourses(String keyword) {
+        return courseRepository.findAll().stream()
+                .filter(course -> course.getCourseName().toLowerCase().contains(keyword.toLowerCase())
+                        || (course.getDescription() != null && course.getDescription().toLowerCase().contains(keyword.toLowerCase())))
+                .map(this::convertToDTO)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<CourseResponseDTO> getFeaturedCourses() {
+        // Giả sử khóa học có availableSlots < 20 là "nổi bật"
+        return courseRepository.findAll().stream()
+                .filter(course -> course.getAvailableSlots() < 20)
+                .map(this::convertToDTO)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<CourseResponseDTO> getNewCourses() {
+        // Giả sử khóa học được tạo trong vòng 7 ngày là "mới"
+        return courseRepository.findAll().stream()
+                .filter(course -> course.getCreatedAt().isAfter(java.time.LocalDateTime.now().minusDays(7)))
+                .map(this::convertToDTO)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<CourseResponseDTO> getPopularCourses() {
+        // Giả sử khóa học có availableSlots < 5 là "phổ biến" (vì số lượng đăng ký cao)
+        return courseRepository.findAll().stream()
+                .filter(course -> course.getAvailableSlots() < 5)
+                .map(this::convertToDTO)
+                .collect(Collectors.toList());
+    }
+
+    // Các hàm chuyển đổi giữa Entity và DTO
     private CourseResponseDTO convertToDTO(Course course) {
         return CourseResponseDTO.builder()
                 .courseId(course.getCourseId())
+                .sku(course.getSku())
                 .courseName(course.getCourseName())
                 .price(course.getPrice())
                 .availableSlots(course.getAvailableSlots())
                 .image(course.getImage())
                 .description(course.getDescription())
+                .categoryId(course.getCategory() != null ? course.getCategory().getCategoryId() : null)
                 .categoryName(course.getCategory() != null ? course.getCategory().getCategoryName() : null)
+                .instructorId(course.getInstructor() != null ? course.getInstructor().getUserId() : null)
                 .instructorName(course.getInstructor() != null ? course.getInstructor().getFullname() : null)
+                .createdAt(course.getCreatedAt())
+                .updatedAt(course.getUpdatedAt())
                 .build();
     }
 
@@ -101,15 +142,12 @@ public class CourseServiceImp implements CourseService {
         course.setImage(courseDTO.getImage());
         course.setAvailableSlots(courseDTO.getAvailableSlots());
         course.setDescription(courseDTO.getDescription());
-
         if (courseDTO.getCategoryId() != null) {
             categoryRepository.findById(courseDTO.getCategoryId()).ifPresent(course::setCategory);
         }
-
         if (courseDTO.getInstructorId() != null) {
             userRepository.findById(courseDTO.getInstructorId()).ifPresent(course::setInstructor);
         }
-
         return course;
     }
 }

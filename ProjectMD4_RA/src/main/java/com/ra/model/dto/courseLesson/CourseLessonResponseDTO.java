@@ -11,6 +11,7 @@ import java.time.LocalDateTime;
 @Builder
 public class CourseLessonResponseDTO {
     private Long lessonId;
+    private Long courseId; // Đảm bảo trường này tồn tại và đúng tên
     private String lessonTitle;
     private String content;
     private String videoUrl;

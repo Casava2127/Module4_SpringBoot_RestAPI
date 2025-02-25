@@ -1,5 +1,5 @@
 package com.ra.model.entity;
 
 public enum PaymentStatus {
-    PENDING, SUCCESS, FAILED;
+    PENDING, SUCCESS, FAILED, PAID;
 }

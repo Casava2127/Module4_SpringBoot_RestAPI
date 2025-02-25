@@ -31,4 +31,7 @@ public class UserRequestDTO {
 
     @NotNull
     private String address;
+
+    public UserRequestDTO(String johnUpdated, String mail, String password123) {
+    }
 }

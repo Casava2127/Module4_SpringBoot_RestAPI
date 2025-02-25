@@ -73,6 +73,7 @@ public class UserServiceImp implements UserService {
             throw new RuntimeException("User not found!");
         }
         User user = optionalUser.get();
+        // lay ra va so sanh , chi dinh id mac dinh la 13
         System.out.println("Stored password: " + user.getPassword());
         System.out.println("Provided old password: " + changePasswordDTO.getOldPassword());
 
