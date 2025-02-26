@@ -726,3 +726,6 @@ Hy vọng khung API này sẽ đáp ứng được các yêu cầu của hệ th
 ---
 
 Đây là bảng phân tích chi tiết các entity tham gia cho từng khung API của hệ thống quản lý khóa học trực tuyến của bạn. Nếu cần triển khai cụ thể cho từng module (DTO, Service, Repository, Controller) bạn có thể xây dựng dựa trên cấu trúc này.st/response và service cho các bảng **Users, Courses, Enrollments (và chi tiết đăng ký), Categories,** và **Course Lessons** vì đây là các bảng cốt lõi định hình chức năng chính của hệ thống quản lý khóa học. Các bảng khác có thể được tích hợp trong service hoặc xây dựng riêng khi nghiệp vụ mở rộng.
+
+
+Dưới đây là các API test mẫu trên Postman cho **Assignment** vàBạn muốn thêm chức năng nào nữa không? 🚀

@@ -24,7 +24,7 @@ public class EnrollmentController {
         this.enrollmentDetailService = enrollmentDetailService;
     }
 
-    // API checkout cart
+    //Thanh toán giỏ hàng và đăng ký khóa học)
     @PostMapping("/cart/checkoutEnrollment")
     public ResponseEntity<?> checkoutCart(@RequestBody PaymentRequestDTO requestDTO) {
         try {

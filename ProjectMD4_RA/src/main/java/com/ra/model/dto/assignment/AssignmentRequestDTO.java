@@ -10,7 +10,6 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @Builder
 public class AssignmentRequestDTO {
-    private Long courseId;
     private String title;
     private String description;
     private LocalDateTime dueDate;

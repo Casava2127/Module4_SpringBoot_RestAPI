@@ -32,6 +32,34 @@ public class UserRoleServiceImpl implements UserRoleService {
                 .roleId(userRole.getRole().getRoleId())
                 .build();
     }
+    @Override
+    public boolean assignRoleToUser(Long userId, Long roleId) {
+        User user = userRepository.findById(userId).orElse(null);
+        Role role = roleRepository.findById(roleId).orElse(null);
+
+        if (user == null || role == null) {
+            return false;
+        }
+
+        UserRole userRole = UserRole.builder()
+                .id(new UserRoleId(userId, roleId))
+                .user(user)
+                .role(role)
+                .build();
+
+        userRoleRepository.save(userRole);
+        return true;
+    }
+
+    @Override
+    public boolean removeRoleFromUser(Long userId, Long roleId) {
+        UserRoleId id = new UserRoleId(userId, roleId);
+        if (!userRoleRepository.existsById(id)) {
+            return false;
+        }
+        userRoleRepository.deleteById(id);
+        return true;
+    }
 
     @Override
     public List<UserRoleDTO> findAll() {

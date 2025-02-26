@@ -9,7 +9,10 @@ import com.ra.repository.FavoriteCourseRepository;
 import com.ra.repository.UserRepository;
 import com.ra.service.favoritecourse.FavoriteCourseService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -32,10 +35,10 @@ public class FavoriteCourseServiceImp implements FavoriteCourseService {
     public FavoriteCourseResponseDTO addFavorite(Long userId, Long courseId) {
         // Kiểm tra user
         User user = userRepository.findById(userId)
-                .orElseThrow(() -> new RuntimeException("User not found"));
-        // Kiểm tra course
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
+
         Course course = courseRepository.findById(courseId)
-                .orElseThrow(() -> new RuntimeException("Course not found"));
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Course not found"));
 
         // Kiểm tra nếu đã có, trả về favorite hiện tại
         Optional<FavoriteCourse> existingFavorite = favoriteCourseRepository.findByUserUserIdAndCourseCourseId(userId, courseId);
@@ -55,9 +58,9 @@ public class FavoriteCourseServiceImp implements FavoriteCourseService {
     }
 
     @Override
-    public boolean removeFavorite(Long userId, Long courseId) {
-        Optional<FavoriteCourse> favoriteOpt = favoriteCourseRepository.findByUserUserIdAndCourseCourseId(userId, courseId);
-        if(favoriteOpt.isEmpty()){
+    public boolean removeFavoriteById(Long favoriteId) {
+        Optional<FavoriteCourse> favoriteOpt = favoriteCourseRepository.findById(favoriteId);
+        if (favoriteOpt.isEmpty()) {
             return false;
         }
         favoriteCourseRepository.delete(favoriteOpt.get());

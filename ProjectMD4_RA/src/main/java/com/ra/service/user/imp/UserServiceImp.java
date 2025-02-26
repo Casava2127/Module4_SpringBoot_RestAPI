@@ -3,12 +3,16 @@ package com.ra.service.user.imp;
 import com.ra.model.dto.user.ChangePasswordDTO;
 import com.ra.model.dto.user.UserRequestDTO;
 import com.ra.model.dto.user.UserResponseDTO;
+import com.ra.model.dto.user.UserStatusUpdateDTO;
 import com.ra.model.entity.User;
 import com.ra.repository.UserRepository;
 import com.ra.service.user.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.stereotype.Service;
 
+import java.awt.print.Pageable;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -23,6 +27,11 @@ public class UserServiceImp implements UserService {
         return userRepository.findAll().stream()
                 .map(this::convertToDTO)
                 .collect(Collectors.toList());
+    }
+    @Override
+    public Page<UserResponseDTO> findAll(Pageable pageable) {
+        Page<User> users = userRepository.findAll((org.springframework.data.domain.Pageable) pageable);
+        return new PageImpl<>(users.stream().map(this::convertToDTO).collect(Collectors.toList()), (org.springframework.data.domain.Pageable) pageable, users.getTotalElements());
     }
 
     @Override
@@ -56,6 +65,17 @@ public class UserServiceImp implements UserService {
 
         User updatedUser = userRepository.save(existingUser);
         return convertToDTO(updatedUser);
+    }
+    @Override
+    public boolean updateUserStatus(Long userId, UserStatusUpdateDTO userStatusUpdateDTO) {
+        Optional<User> optionalUser = userRepository.findById(userId);
+        if (optionalUser.isPresent()) {
+            User user = optionalUser.get();
+            user.setStatus(userStatusUpdateDTO.isStatus());
+            userRepository.save(user);
+            return true;
+        }
+        return false;
     }
 
     @Override

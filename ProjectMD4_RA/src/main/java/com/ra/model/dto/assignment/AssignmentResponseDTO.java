@@ -11,7 +11,6 @@ import java.time.LocalDateTime;
 @Builder
 public class AssignmentResponseDTO {
     private Long assignmentId;
-    private String courseName;
     private String title;
     private String description;
     private LocalDateTime dueDate;
