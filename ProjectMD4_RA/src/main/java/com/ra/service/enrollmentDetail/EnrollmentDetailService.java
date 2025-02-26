@@ -1,5 +1,6 @@
 package com.ra.service.enrollmentDetail;
 
+import com.ra.model.dto.enrollment.EnrollmentResponseDTO;
 import com.ra.model.dto.enrollmentDetail.EnrollmentDetailRequestDTO;
 import com.ra.model.dto.enrollmentDetail.EnrollmentDetailResponseDTO;
 
@@ -12,4 +13,5 @@ public interface EnrollmentDetailService {
     EnrollmentDetailResponseDTO save(EnrollmentDetailRequestDTO dto);
     EnrollmentDetailResponseDTO update(EnrollmentDetailRequestDTO dto);
     boolean delete(Long enrollmentId, Long courseId);
+    List<EnrollmentDetailResponseDTO> getEnrollmentDetail(Long enrollmentId);
 }

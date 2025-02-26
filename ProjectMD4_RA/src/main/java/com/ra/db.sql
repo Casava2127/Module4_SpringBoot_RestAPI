@@ -1,5 +1,5 @@
 -- Nếu cần, xóa cơ sở dữ liệu cũ (chỉ dùng trong môi trường thử nghiệm)
-DROP DATABASE IF EXISTS course_management1;
+
 
 -- Tạo cơ sở dữ liệu và sử dụng nó
 CREATE DATABASE course_management1;
@@ -280,20 +280,20 @@ CREATE TABLE live_sessions (
 );
 
 
-
-ALTER TABLE users MODIFY created_at DATETIME DEFAULT CURRENT_TIMESTAMP;
-ALTER TABLE courses MODIFY created_at DATETIME DEFAULT CURRENT_TIMESTAMP;
-ALTER TABLE course_lessons MODIFY created_at DATETIME DEFAULT CURRENT_TIMESTAMP;
-ALTER TABLE enrollments MODIFY created_at DATETIME DEFAULT CURRENT_TIMESTAMP;
-ALTER TABLE payments MODIFY created_at DATETIME DEFAULT CURRENT_TIMESTAMP;
-ALTER TABLE notifications MODIFY created_at DATETIME DEFAULT CURRENT_TIMESTAMP;
-ALTER TABLE assignments MODIFY created_at DATETIME DEFAULT CURRENT_TIMESTAMP;
-ALTER TABLE submissions MODIFY submitted_at DATETIME DEFAULT CURRENT_TIMESTAMP;
-ALTER TABLE discussions MODIFY created_at DATETIME DEFAULT CURRENT_TIMESTAMP;
-ALTER TABLE discussion_comments MODIFY created_at DATETIME DEFAULT CURRENT_TIMESTAMP;
-ALTER TABLE private_messages MODIFY created_at DATETIME DEFAULT CURRENT_TIMESTAMP;
-ALTER TABLE certificates MODIFY issued_at DATETIME DEFAULT CURRENT_TIMESTAMP;
-ALTER TABLE live_sessions MODIFY created_at DATETIME DEFAULT CURRENT_TIMESTAMP;
+#
+# ALTER TABLE users MODIFY created_at DATETIME DEFAULT CURRENT_TIMESTAMP;
+# ALTER TABLE courses MODIFY created_at DATETIME DEFAULT CURRENT_TIMESTAMP;
+# ALTER TABLE course_lessons MODIFY created_at DATETIME DEFAULT CURRENT_TIMESTAMP;
+# ALTER TABLE enrollments MODIFY created_at DATETIME DEFAULT CURRENT_TIMESTAMP;
+# ALTER TABLE payments MODIFY created_at DATETIME DEFAULT CURRENT_TIMESTAMP;
+# ALTER TABLE notifications MODIFY created_at DATETIME DEFAULT CURRENT_TIMESTAMP;
+# ALTER TABLE assignments MODIFY created_at DATETIME DEFAULT CURRENT_TIMESTAMP;
+# ALTER TABLE submissions MODIFY submitted_at DATETIME DEFAULT CURRENT_TIMESTAMP;
+# ALTER TABLE discussions MODIFY created_at DATETIME DEFAULT CURRENT_TIMESTAMP;
+# ALTER TABLE discussion_comments MODIFY created_at DATETIME DEFAULT CURRENT_TIMESTAMP;
+# ALTER TABLE private_messages MODIFY created_at DATETIME DEFAULT CURRENT_TIMESTAMP;
+# ALTER TABLE certificates MODIFY issued_at DATETIME DEFAULT CURRENT_TIMESTAMP;
+# ALTER TABLE live_sessions MODIFY created_at DATETIME DEFAULT CURRENT_TIMESTAMP;
 
 
 
@@ -303,7 +303,10 @@ VALUES
     ('john_doe', 'john@example.com', 'John Doe', 'hashed123', '0912345678', '123 Main St', NOW(), 1, 1, NOW(), 'rum.jpg'),
     ('jane_smith', 'jane@example.com', 'Jane Smith', 'hashed456', '0923456789', '456 Oak Ave', NOW(), 1, 1, NOW(), 'rum1.jpg'),
     ('mr_instructor', 'instructor@example.com', 'Mike Johnson', 'hashed789', '0934567890', '789 Pine Rd', NOW(), 1, 1, NOW(), 'rum2.jpg');  -- Added missing status column value (1)
-
+INSERT INTO users (username, email, fullname, password, phone, address, created_at, is_deleted, status, updated_at, avatar)
+VALUES
+    ('alice_wang', 'alice@example.com', 'Alice Wang', 'hashed101', '0945678901', '101 Elm St', NOW(), 0, 1, NOW(), 'alice.jpg'),
+    ('bob_lee', 'bob@example.com', 'Bob Lee', 'hashed202', '0956789012', '202 Maple St', NOW(), 0, 1, NOW(), 'bob.jpg');
 -- 2. Thêm dữ liệu vào bảng roles
 INSERT INTO roles (role_name)
 VALUES
@@ -317,6 +320,10 @@ VALUES
     (1, 2),   -- John là Student
     (2, 2),   -- Jane là Student
     (3, 3);   -- Mike là Instructor
+INSERT INTO user_roles (user_id, role_id)
+VALUES
+    (4, 2),   -- Alice là Student
+    (5, 2);   -- Bob là Student
 
 -- 4. Thêm dữ liệu vào bảng categories
 INSERT INTO categories (category_name, description, status)
@@ -324,27 +331,40 @@ VALUES
     ('Programming', 'Coding and development courses', 1),
     ('Design', 'Graphic and UI/UX design courses', 1);
 
-
+INSERT INTO categories (category_name, description, status)
+VALUES
+    ('Data Science', 'Courses on data analysis and machine learning', 1),
+    ('Business', 'Courses on business management and entrepreneurship', 1);
 
 -- 5. Thêm dữ liệu vào bảng courses
 INSERT INTO courses (sku, course_name, description, price, category_id, instructor_id, available_slots, updated_at,created_at)
 VALUES
     (UUID(), 'Python Basics', 'Introduction to Python', 299.99, 1, 3, 50, NOW(), NOW()),
     (UUID(), 'UI Design', 'UI Fundamentals', 399.99, 2, 3, 30, NOW(), NOW());
-
+INSERT INTO courses (sku, course_name, description, price, category_id, instructor_id, available_slots, updated_at, created_at)
+VALUES
+    (UUID(), 'Machine Learning', 'Introduction to ML', 499.99, 3, 3, 40, NOW(), NOW()),
+    (UUID(), 'Entrepreneurship', 'Starting your own business', 349.99, 4, 3, 25, NOW(), NOW());
 -- 6. Thêm dữ liệu vào bảng course_lessons
 INSERT INTO course_lessons (course_id, lesson_title, content, video_url, updated_at,created_at)
 VALUES
     (1, 'Python Syntax', 'Basic syntax lesson', 'video1.url', NOW(), NOW()),
     (1, 'Data Types', 'Data types lesson', 'video2.url', NOW(), NOW()),
     (2, 'Color Theory', 'Color basics', 'video3.url', NOW(), NOW());
-
+INSERT INTO course_lessons (course_id, lesson_title, content, video_url, updated_at, created_at)
+VALUES
+    (3, 'Introduction to ML', 'What is Machine Learning?', 'video4.url', NOW(), NOW()),
+    (3, 'Supervised Learning', 'Basics of supervised learning', 'video5.url', NOW(), NOW()),
+    (4, 'Business Planning', 'How to create a business plan', 'video6.url', NOW(), NOW());
 -- 7. Thêm dữ liệu vào bảng enrollments
 INSERT INTO enrollments (serial_number, user_id, total_price, status,created_at)
 VALUES
     (UUID(), 1, 599.98, 'CONFIRMED', NOW()),
     (UUID(), 2, 399.99, 'IN_PROGRESS', NOW());
-
+INSERT INTO enrollments (serial_number, user_id, total_price, status, created_at)
+VALUES
+    (UUID(), 4, 499.99, 'CONFIRMED', NOW()),
+    (UUID(), 5, 349.99, 'IN_PROGRESS', NOW());
 -- 8. Thêm dữ liệu vào bảng enrollment_details
 SELECT * FROM enrollment_details WHERE enrollment_id = 1 AND course_id = 1;
 
@@ -354,75 +374,117 @@ VALUES
     (2, 2, 'UI Design', 399.99, 1)
 ON DUPLICATE KEY UPDATE quantity = VALUES(quantity);
 
+INSERT INTO enrollment_details (enrollment_id, course_id, course_name, unit_price, quantity)
+VALUES
+    (3, 3, 'Machine Learning', 499.99, 1),
+    (4, 4, 'Entrepreneurship', 349.99, 1)
+ON DUPLICATE KEY UPDATE quantity = VALUES(quantity);
 -- 9. Thêm dữ liệu vào bảng course_cart
 INSERT INTO course_cart (course_id, user_id, quantity, created_at)
 VALUES
     (2, 1, 1, NOW()),
     (1, 2, 1, NOW());
-
+INSERT INTO course_cart (course_id, user_id, quantity, created_at)
+VALUES
+    (3, 4, 1, NOW()),
+    (4, 5, 1, NOW());
 
 -- 10. Thêm dữ liệu vào bảng favorite_courses
 INSERT INTO favorite_courses (user_id, course_id, created_at)
 VALUES
     (1, 2, NOW()),
     (2, 1, NOW());
-
+INSERT INTO favorite_courses (user_id, course_id, created_at)
+VALUES
+    (4, 3, NOW()),
+    (5, 4, NOW());
 -- 11. Thêm dữ liệu vào bảng course_reviews
 INSERT INTO course_reviews (course_id, user_id, rating, comment, created_at)
 VALUES
     (1, 1, 5, 'Excellent course!', NOW()),
     (2, 2, 4, 'Very informative',NOW());
-
+INSERT INTO course_reviews (course_id, user_id, rating, comment, created_at)
+VALUES
+    (3, 4, 5, 'Fantastic course!', NOW()),
+    (4, 5, 4, 'Very practical', NOW());
 -- 12. Thêm dữ liệu vào bảng payments
 INSERT INTO payments (enrollment_id, user_id, amount, payment_method, status, paid_at,created_at)
 VALUES
     (1, 1, 599.98, 'CREDIT_CARD', 'SUCCESS', NOW(), NOW()),
     (2, 2, 399.99, 'PAYPAL', 'SUCCESS', NOW(), NOW());
-
+INSERT INTO payments (enrollment_id, user_id, amount, payment_method, status, paid_at, created_at)
+VALUES
+    (3, 4, 499.99, 'CREDIT_CARD', 'SUCCESS', NOW(), NOW()),
+    (4, 5, 349.99, 'PAYPAL', 'SUCCESS', NOW(), NOW());
 -- 13. Thêm dữ liệu vào bảng notifications
 INSERT INTO notifications (user_id, title, message, is_read,created_at)
 VALUES
     (1, 'Welcome!', 'Thank you for joining',1, NOW()),
     (2, 'Update', 'New lesson available',1, NOW());
-
+INSERT INTO notifications (user_id, title, message, is_read, created_at)
+VALUES
+    (4, 'Welcome!', 'Thank you for joining', 1, NOW()),
+    (5, 'Update', 'New lesson available', 1, NOW());
 -- 14. Thêm dữ liệu vào bảng assignments
 INSERT INTO assignments (course_id, title, description, due_date,created_at)
 VALUES
     (1, 'Python Quiz 1', 'Basic syntax quiz', DATE_ADD(NOW(), INTERVAL 7 DAY), NOW()),
     (2, 'Design Project', 'UI color project', DATE_ADD(NOW(), INTERVAL 14 DAY), NOW());
-
+INSERT INTO assignments (course_id, title, description, due_date, created_at)
+VALUES
+    (3, 'ML Project', 'Build a simple ML model', DATE_ADD(NOW(), INTERVAL 10 DAY), NOW()),
+    (4, 'Business Plan', 'Create a business plan', DATE_ADD(NOW(), INTERVAL 14 DAY), NOW());
 -- 15. Thêm dữ liệu vào bảng submissions
 INSERT INTO submissions (assignment_id, user_id, file_url, grade,submitted_at)
 VALUES
     (1, 1, 'submission1.url', 9.5, NOW()),
     (2, 2, 'submission2.url', 8.8, NOW());
-
+INSERT INTO submissions (assignment_id, user_id, file_url, grade, submitted_at)
+VALUES
+    (3, 4, 'submission3.url', 9.0, NOW()),
+    (4, 5, 'submission4.url', 8.5, NOW());
 -- 16. Thêm dữ liệu vào bảng discussions
 INSERT INTO discussions (course_id, user_id, title, content,created_at)
 VALUES
     (1, 1, 'Question about loops', 'How to use while loops?', NOW()),
     (2, 2, 'Color help', 'Best color combinations', NOW());
-
+INSERT INTO discussions (course_id, user_id, title, content, created_at)
+VALUES
+    (3, 4, 'ML Algorithms', 'Which algorithm to use?', NOW()),
+    (4, 5, 'Funding Options', 'Best ways to fund a startup?', NOW());
 -- 17. Thêm dữ liệu vào bảng discussion_comments
 INSERT INTO discussion_comments (discussion_id, user_id, comment,created_at)
 VALUES
     (1, 3, 'Use for loops instead', NOW()),
     (2, 3, 'Try complementary colors', NOW());
-
+INSERT INTO discussion_comments (discussion_id, user_id, comment, created_at)
+VALUES
+    (3, 1, 'Start with linear regression', NOW()),
+    (4, 2, 'Consider angel investors', NOW());
 -- 18. Thêm dữ liệu vào bảng private_messages
 INSERT INTO private_messages (sender_id, receiver_id, subject, content, is_read,created_at)
 VALUES
     (3, 1, 'Assignment feedback', 'Great job!',1, NOW()),
     (3, 2, 'Project update', 'Check new materials',1, NOW());
-
+INSERT INTO private_messages (sender_id, receiver_id, subject, content, is_read, created_at)
+VALUES
+    (3, 4, 'ML Project Feedback', 'Great progress!', 1, NOW()),
+    (3, 5, 'Business Plan Review', 'Check the financials', 1, NOW());
 -- 19. Thêm dữ liệu vào bảng certificates
 INSERT INTO certificates (enrollment_id, certificate_url, issued_at)
 VALUES (1, 'certificate1.url', NOW()),
        (2, 'certificate2.url', NOW());
 
-
+INSERT INTO certificates (enrollment_id, certificate_url, issued_at)
+VALUES
+    (3, 'certificate3.url', NOW()),
+    (4, 'certificate4.url', NOW());
 -- 20. Thêm dữ liệu vào bảng live_sessions
 INSERT INTO live_sessions (course_id, session_title, session_description, scheduled_at, duration,created_at)
 VALUES
     (1, 'Python Q&A', 'Live coding session', DATE_ADD(NOW(), INTERVAL 3 DAY), 60, NOW()),
     (2, 'Design Workshop', 'Live design review', DATE_ADD(NOW(), INTERVAL 5 DAY), 90, NOW());
+INSERT INTO live_sessions (course_id, session_title, session_description, scheduled_at, duration, created_at)
+VALUES
+    (3, 'ML Q&A', 'Live Q&A on ML topics', DATE_ADD(NOW(), INTERVAL 7 DAY), 60, NOW()),
+    (4, 'Business Pitch', 'Live pitch practice', DATE_ADD(NOW(), INTERVAL 10 DAY), 90, NOW());

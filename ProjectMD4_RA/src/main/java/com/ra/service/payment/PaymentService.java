@@ -12,4 +12,6 @@ public interface PaymentService {
     PaymentResponseDTO save(PaymentRequestDTO paymentDTO);
     PaymentResponseDTO update(Long id, PaymentRequestDTO paymentDTO);
     boolean delete(Long id);
+
+    PaymentResponseDTO checkoutCart(PaymentRequestDTO paymentRequestDTO);
 }

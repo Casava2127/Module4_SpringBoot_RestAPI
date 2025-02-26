@@ -27,7 +27,7 @@ public class PaymentController {
         return payment.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
     }
 
-    @PostMapping
+    @PostMapping()
     public ResponseEntity<PaymentResponseDTO> createPayment(@RequestBody PaymentRequestDTO paymentDTO) {
         return ResponseEntity.ok(paymentService.save(paymentDTO));
     }

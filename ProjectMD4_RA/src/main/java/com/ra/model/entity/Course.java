@@ -60,4 +60,6 @@ public class Course {
     protected void onUpdate() {
         this.updatedAt = LocalDateTime.now();
     }
+
+
 }

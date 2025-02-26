@@ -55,7 +55,7 @@ public class AuthServiceImp implements AuthService {
         Optional<Role> defaultRoleOpt = roleRepository.findByRoleName(RoleName.STUDENT);
 
 
-        if (!defaultRoleOpt.isPresent()) {
+        if (defaultRoleOpt.isEmpty()) {
             throw new RuntimeException("Default role not found");
         }
         Role defaultRole = defaultRoleOpt.get();
@@ -70,10 +70,14 @@ public class AuthServiceImp implements AuthService {
 
     @Override
     public AuthResponseDTO signIn(SignInRequestDTO signInRequest) {
-        User user = userRepository.findByUsername(signInRequest.getUsername())
-                .orElseThrow(() -> new RuntimeException("User not found"));
+        System.out.println("Attempting login with username: " + signInRequest.getUsername());
 
-        // So sánh mật khẩu raw trực tiếp (KHÔNG an toàn!)
+        User user = userRepository.findByUsername(signInRequest.getUsername())
+                .orElseThrow(() -> new RuntimeException("User not found: " + signInRequest.getUsername()));
+
+        System.out.println("User found: " + user.getUsername());
+
+        // So sánh mật khẩu (chưa mã hóa - không an toàn)
         if (!signInRequest.getPassword().equals(user.getPassword())) {
             throw new RuntimeException("Invalid password");
         }
@@ -85,6 +89,7 @@ public class AuthServiceImp implements AuthService {
                 .tokenType("Bearer")
                 .build();
     }
+
 }
 
 

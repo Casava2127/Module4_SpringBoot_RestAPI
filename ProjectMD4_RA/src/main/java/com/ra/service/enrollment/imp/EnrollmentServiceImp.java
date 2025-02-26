@@ -2,6 +2,7 @@ package com.ra.service.enrollment.imp;
 
 import com.ra.exception.ResourceNotFoundException;
 import com.ra.model.dto.enrollment.EnrollmentResponseDTO;
+import com.ra.model.dto.enrollmentDetail.EnrollmentDetailResponseDTO;
 import com.ra.model.dto.payment.PaymentRequestDTO;
 import com.ra.model.dto.payment.PaymentResponseDTO;
 import com.ra.model.entity.*;
@@ -40,9 +41,11 @@ public class EnrollmentServiceImp implements EnrollmentService {
     @Override
     @Transactional
     public PaymentResponseDTO checkoutCart(PaymentRequestDTO requestDTO) {
+        // Lấy thông tin người dùng
         User user = userRepository.findById(requestDTO.getUserId())
                 .orElseThrow(() -> new ResourceNotFoundException("User not found"));
 
+        // Lấy danh sách khóa học trong giỏ
         List<CourseCart> cartItems = courseCartRepository.findByUserUserId(requestDTO.getUserId());
         if (cartItems.isEmpty()) {
             throw new IllegalStateException("Cart is empty");
@@ -53,7 +56,7 @@ public class EnrollmentServiceImp implements EnrollmentService {
                 .map(item -> item.getCourse().getPrice().multiply(BigDecimal.valueOf(item.getQuantity())))
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
 
-        // Tạo Enrollment
+        // Tạo Enrollment và lưu để có được enrollmentId
         Enrollment enrollment = Enrollment.builder()
                 .serialNumber(UUID.randomUUID().toString())
                 .user(user)
@@ -63,9 +66,10 @@ public class EnrollmentServiceImp implements EnrollmentService {
                 .build();
         enrollment = enrollmentRepository.save(enrollment);
 
-        // Tạo EnrollmentDetail từ CourseCart
+        // Tạo EnrollmentDetail từ CourseCart, khởi tạo composite key
         for (CourseCart cartItem : cartItems) {
             EnrollmentDetail enrollmentDetail = EnrollmentDetail.builder()
+                    .id(new EnrollmentDetailId(enrollment.getEnrollmentId(), cartItem.getCourse().getCourseId()))
                     .enrollment(enrollment)
                     .course(cartItem.getCourse())
                     .courseName(cartItem.getCourse().getCourseName())
@@ -83,8 +87,8 @@ public class EnrollmentServiceImp implements EnrollmentService {
                 .enrollment(enrollment)
                 .user(user)
                 .amount(totalPrice)
-                .paymentMethod(PaymentMethod.valueOf(requestDTO.getPaymentMethod().toUpperCase())) // Chuyển từ String sang Enum
-                .status(PaymentStatus.PAID) // Dùng Enum thay vì String
+                .paymentMethod(PaymentMethod.valueOf(requestDTO.getPaymentMethod().toUpperCase()))
+                .status(PaymentStatus.PAID)
                 .paidAt(LocalDateTime.now())
                 .createdAt(LocalDateTime.now())
                 .build();
@@ -96,12 +100,11 @@ public class EnrollmentServiceImp implements EnrollmentService {
                 enrollment.getEnrollmentId(),
                 user.getUsername(),
                 totalPrice,
-                payment.getPaymentMethod().name(),  // Chuyển Enum về String
-                payment.getStatus().name(),         // Chuyển Enum về String
+                payment.getPaymentMethod().name(),
+                payment.getStatus().name(),
                 payment.getPaidAt(),
                 payment.getCreatedAt()
         );
-
     }
 
     @Override
@@ -119,17 +122,24 @@ public class EnrollmentServiceImp implements EnrollmentService {
     }
 
     @Override
-    public EnrollmentResponseDTO getEnrollmentDetail(Long enrollmentId) {
-        Enrollment enrollment = enrollmentRepository.findById(enrollmentId)
-                .orElseThrow(() -> new ResourceNotFoundException("Enrollment not found"));
+    public List<EnrollmentDetailResponseDTO> getEnrollmentDetail(Long enrollmentId) {
+        List<EnrollmentDetail> details = enrollmentDetailRepository.findByEnrollmentEnrollmentId(enrollmentId);
+        if (details.isEmpty()) {
+            throw new ResourceNotFoundException("No enrollment details found for enrollmentId: " + enrollmentId);
+        }
+        return details.stream()
+                .map(this::convertToDTO)
+                .collect(Collectors.toList());
+    }
 
-        return new EnrollmentResponseDTO(
-                enrollment.getEnrollmentId(),
-                enrollment.getSerialNumber(),
-                enrollment.getTotalPrice(),
-                enrollment.getStatus().name(),
-                enrollment.getCreatedAt()
-        );
+    private EnrollmentDetailResponseDTO convertToDTO(EnrollmentDetail detail) {
+        return EnrollmentDetailResponseDTO.builder()
+                .enrollmentId(detail.getEnrollment().getEnrollmentId())
+                .courseId(detail.getCourse().getCourseId())
+                .courseName(detail.getCourse().getCourseName())
+                .quantity(detail.getQuantity())
+                .unitPrice(detail.getUnitPrice())
+                .build();
     }
 
     @Override

@@ -4,6 +4,8 @@ import jakarta.persistence.*;
 import lombok.*;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "enrollments")
@@ -40,4 +42,7 @@ public class Enrollment {
     protected void onCreate() {
         this.createdAt = LocalDateTime.now();
     }
+    @OneToMany(mappedBy = "enrollment", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<EnrollmentDetail> enrollmentDetails = new ArrayList<>();
+
 }

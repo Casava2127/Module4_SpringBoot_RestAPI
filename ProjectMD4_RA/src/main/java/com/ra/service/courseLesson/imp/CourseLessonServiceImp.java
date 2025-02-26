@@ -187,8 +187,7 @@ public class CourseLessonServiceImp implements CourseLessonService {
                 .lessonTitle(lesson.getLessonTitle())
                 .content(lesson.getContent())
                 .videoUrl(lesson.getVideoUrl())
-                .sortOrder(lesson.getSortOrder())
-                .createdAt(lesson.getCreatedAt())
+                .sortOrder(lesson.getSortOrder()!= null ? lesson.getSortOrder() :0)
                 .updatedAt(lesson.getUpdatedAt())
                 .build();
     }

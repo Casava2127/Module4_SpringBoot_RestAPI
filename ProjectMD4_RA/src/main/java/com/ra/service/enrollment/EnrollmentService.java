@@ -17,6 +17,7 @@ package com.ra.service.enrollment;
 
 
 import com.ra.model.dto.enrollment.EnrollmentResponseDTO;
+import com.ra.model.dto.enrollmentDetail.EnrollmentDetailResponseDTO;
 import com.ra.model.dto.payment.PaymentRequestDTO;
 import com.ra.model.dto.payment.PaymentResponseDTO;
 
@@ -25,6 +26,6 @@ import java.util.List;
 public interface EnrollmentService {
     PaymentResponseDTO checkoutCart(PaymentRequestDTO requestDTO);
     List<EnrollmentResponseDTO> getUserEnrollments(Long userId);
-    EnrollmentResponseDTO getEnrollmentDetail(Long enrollmentId);
     void cancelEnrollment(Long enrollmentId);
+    List<EnrollmentDetailResponseDTO> getEnrollmentDetail(Long enrollmentId);
 }

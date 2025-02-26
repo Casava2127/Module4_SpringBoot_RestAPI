@@ -45,8 +45,15 @@ public class CourseCartServiceImp implements CourseCartService {
     @Override
     @Transactional
     public void addToCart(Long userId, CourseCartRequestDTO requestDTO) {
+        if (userId == null) {
+            throw new IllegalArgumentException("User ID must not be null");
+        }
+        if (requestDTO.getCourseId() == null) {
+            throw new IllegalArgumentException("Course ID must not be null");
+        }
+
         User user = userRepository.findById(userId)
-                .orElseThrow(() -> new com.ra.exception.ResourceNotFoundException("User not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
 
         Course course = courseRepository.findById(requestDTO.getCourseId())
                 .orElseThrow(() -> new ResourceNotFoundException("Course not found"));
@@ -67,6 +74,7 @@ public class CourseCartServiceImp implements CourseCartService {
 
         courseCartRepository.save(cartItem);
     }
+
 
     @Override
     @Transactional

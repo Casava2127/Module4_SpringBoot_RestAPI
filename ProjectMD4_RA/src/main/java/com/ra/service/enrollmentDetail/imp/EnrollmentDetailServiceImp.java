@@ -1,5 +1,6 @@
 package com.ra.service.enrollmentDetail.imp;
 
+import com.ra.exception.ResourceNotFoundException;
 import com.ra.model.dto.enrollmentDetail.EnrollmentDetailRequestDTO;
 import com.ra.model.dto.enrollmentDetail.EnrollmentDetailResponseDTO;
 import com.ra.model.entity.Course;
@@ -43,6 +44,8 @@ public class EnrollmentDetailServiceImp implements EnrollmentDetailService {
                 .map(this::convertToDTO);
     }
 
+
+
     @Override
     public EnrollmentDetailResponseDTO save(EnrollmentDetailRequestDTO dto) {
         Enrollment enrollment = enrollmentRepository.findById(dto.getEnrollmentId())
@@ -80,6 +83,20 @@ public class EnrollmentDetailServiceImp implements EnrollmentDetailService {
         enrollmentDetailRepository.deleteById(id);
         return true;
     }
+
+    // Phương thức này triển khai getEnrollmentDetail(Long) theo yêu cầu của interface.
+    // Nó trả về danh sách chi tiết đăng ký cho một đơn đăng ký (enrollment) cụ thể.
+    @Override
+    public List<EnrollmentDetailResponseDTO> getEnrollmentDetail(Long enrollmentId) {
+        List<EnrollmentDetail> details = enrollmentDetailRepository.findByEnrollmentEnrollmentId(enrollmentId);
+        if (details.isEmpty()) {
+            throw new ResourceNotFoundException("No enrollment details found for enrollmentId: " + enrollmentId);
+        }
+        return details.stream()
+                .map(this::convertToDTO)
+                .collect(Collectors.toList());
+    }
+
 
     private EnrollmentDetailResponseDTO convertToDTO(EnrollmentDetail detail) {
         return EnrollmentDetailResponseDTO.builder()

@@ -30,7 +30,7 @@ public class CourseLesson {
     private String videoUrl;
 
     @Column(name = "sort_order")
-    private int sortOrder;
+    private Integer sortOrder;
 
     @Column(name = "created_at", nullable = false)
     private LocalDateTime createdAt;
