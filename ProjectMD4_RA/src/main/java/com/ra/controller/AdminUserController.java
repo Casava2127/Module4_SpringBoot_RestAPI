@@ -1,11 +1,15 @@
 package com.ra.controller;
 
+import com.ra.model.dto.course.CourseResponseDTO;
 import com.ra.model.dto.user.UserResponseDTO;
 import com.ra.model.dto.user.UserStatusUpdateDTO;
+import com.ra.service.course.CourseService;
 import com.ra.service.user.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -17,12 +21,16 @@ public class AdminUserController {
 
     @Autowired
     private UserService userService;
+    @Autowired
+    private CourseService courseService;
 
     @GetMapping
-    public ResponseEntity<Page<UserResponseDTO>> getAllUsers(Pageable pageable) {
+    public ResponseEntity<Page<UserResponseDTO>> getAllAdminUsers(Pageable pageable) {
         Page<UserResponseDTO> users = userService.findAll((java.awt.print.Pageable) pageable);
         return ResponseEntity.ok(users);
     }
+
+
 
     @GetMapping("/{userId}")
     public ResponseEntity<UserResponseDTO> getUserById(@PathVariable Long userId) {
@@ -38,5 +46,7 @@ public class AdminUserController {
         }
         return ResponseEntity.notFound().build();
     }
+
+
 
 }

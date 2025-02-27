@@ -4,7 +4,7 @@ Hệ thống quản lý khóa học trực tuyến được thiết kế với 2
     - **Chức năng:** Lưu trữ thông tin cá nhân của tất cả người dùng trong hệ thống, bao gồm tên đăng nhập, email, họ tên, mật khẩu (đã mã hóa), số điện thoại, địa chỉ, trạng thái hoạt động, ảnh đại diện và thời gian tạo/cập nhật tài khoản. Cột `is_deleted` cho biết tài khoản có bị xóa hay không.
 
 2. **Bảng `roles` (quyền) -S:**
-    - **Chức năng:** Xác định các vai trò khác nhau trong hệ thống, như 'ADMIN', 'STUDENT' và 'INSTRUCTOR'. Mỗi vai trò được gán một `role_id` duy nhất.
+    - **Chức năng:** Xác địpaynh các vai trò khác nhau trong hệ thống, như 'ADMIN', 'STUDENT' và 'INSTRUCTOR'. Mỗi vai trò được gán một `role_id` duy nhất.
 
 3. **Bảng `user_roles` (phân quyền người dùng):-S**
     - **Chức năng:** Liên kết người dùng với các vai trò tương ứng. Mỗi bản ghi xác định một người dùng cụ thể (`user_id`) có một vai trò nhất định (`role_id`), cho phép một người dùng có thể đảm nhận nhiều vai trò.

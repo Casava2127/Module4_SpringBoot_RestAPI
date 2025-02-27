@@ -8,6 +8,8 @@ import com.ra.repository.CategoryRepository;
 import com.ra.repository.UserRepository;
 import com.ra.service.course.CourseService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -129,6 +131,37 @@ public class CourseServiceImp implements CourseService {
                 .map(this::convertToDTO)
                 .collect(Collectors.toList());
     }
+    @Override
+    public Page<CourseResponseDTO> findAll(Pageable pageable) {
+        return courseRepository.findAll(pageable).map(this::convertToDTO);
+    }
+
+    //@Override
+//    public CourseResponseDTO update(Long id, CourseRequestDTO courseDTO) {
+//        Course course = courseRepository.findById(id)
+//                .orElseThrow(() -> new ResourceNotFoundException("Course not found"));
+//
+//        if (courseDTO.getCategoryId() != null) {
+//            Category category = categoryRepository.findById(courseDTO.getCategoryId())
+//                    .orElseThrow(() -> new ResourceNotFoundException("Category not found"));
+//            course.setCategory(category);
+//        }
+//
+//        if (courseDTO.getInstructorId() != null) {
+//            User instructor = userRepository.findById(courseDTO.getInstructorId())
+//                    .orElseThrow(() -> new ResourceNotFoundException("Instructor not found"));
+//            course.setInstructor(instructor);
+//        }
+//
+//        course.setCourseName(courseDTO.getCourseName());
+//        course.setPrice(courseDTO.getPrice());
+//        course.setAvailableSlots(courseDTO.getAvailableSlots());
+//        course.setImage(courseDTO.getImage());
+//        course.setDescription(courseDTO.getDescription());
+//
+//        return convertToDTO(courseRepository.save(course));
+//    }
+
 
     // Các hàm chuyển đổi giữa Entity và DTO
     private CourseResponseDTO convertToDTO(Course course) {

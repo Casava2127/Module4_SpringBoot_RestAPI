@@ -1,31 +1,47 @@
-package com.ra.config;
-
-import static org.springframework.security.config.Customizer.withDefaults;
-
+package com.ra.config;//package com.ra.config;
+//
+//import org.springframework.context.annotation.Bean;
+//import org.springframework.context.annotation.Configuration;
+//import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+//import org.springframework.security.config.http.SessionCreationPolicy;
+//import org.springframework.security.web.SecurityFilterChain;
+//import org.springframework.security.web.authentication.Http403ForbiddenEntryPoint;
+//
+//@Configuration
+//public class SecurityConfig {
+//
+//    @Bean
+//    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+//        http
+//                .csrf(csrf -> csrf.disable())  // Tắt CSRF nếu API không cần
+//                .authorizeHttpRequests(auth -> auth
+//                        .requestMatchers("/api/v1/auth/**").permitAll()  // Cho phép đăng ký & đăng nhập mà không cần token
+//                        .requestMatchers("/api/v1/users/**").permitAll()  // ko Cần xác thực để truy cập user
+//                        .anyRequest().authenticated()
+//                )
+//                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))  // Nếu dùng JWT, API sẽ stateless
+//                .exceptionHandling(ex -> ex.authenticationEntryPoint(new Http403ForbiddenEntryPoint())); // Xử lý lỗi 403
+//
+//        return http.build();
+//    }
+//}
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.web.SecurityFilterChain;
 
 @Configuration
-@EnableWebSecurity
 public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-                // Vô hiệu hóa CSRF nếu không cần thiết cho API REST (hoặc cấu hình lại nếu cần)
-                .csrf(csrf -> csrf.disable())
-                // Cấu hình phân quyền truy cập
-                .authorizeHttpRequests(authorize -> authorize
-                        // Cho phép truy cập công khai đến các endpoint cụ thể (nếu cần)
-                        .requestMatchers("/api/public/**").permitAll()
-                        // Các request khác đều cần xác thực
-                        .anyRequest().authenticated()
+                .csrf(csrf -> csrf.disable())  // Tắt CSRF (tránh lỗi CSRF khi test API)
+                .authorizeHttpRequests(auth -> auth
+                        .anyRequest().permitAll() // Cho phép tất cả API truy cập mà không cần xác thực
                 )
-                // Sử dụng HTTP Basic (theo cách lambda DSL)
-                .httpBasic(withDefaults());
+                .formLogin(form -> form.disable())  // Tắt form login mặc định của Spring Security
+                .httpBasic(httpBasic -> httpBasic.disable()); // Tắt xác thực HTTP Basic
 
         return http.build();
     }
