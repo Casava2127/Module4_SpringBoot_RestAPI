@@ -1,0 +1,81 @@
+/* Căn giữa toàn bộ ứng dụng trên trang */
+body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh; /* Chiếm toàn bộ chiều cao màn hình */
+    margin: 0;
+    background: #f8f9fa; /* Màu nền nhẹ nhàng */
+    font-family: Arial, sans-serif;
+}
+
+/* Cấu trúc chính của ứng dụng */
+.app-container {
+    max-width: 400px;
+    width: 100%;
+    text-align: center;
+    padding: 20px;
+    background: #fff;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    color: #444242;
+}
+
+
+/* Form nhập công việc */
+.task-input {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    margin-bottom: 15px;
+
+}
+
+.task-input input {
+    padding: 10px;
+    width: 70%;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    font-size: 16px;
+    color: rgba(243, 219, 219, 0.96); /* Màu chữ đậm hơn */
+}
+
+.task-input button {
+    padding: 10px;
+    background: #28a745;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background 0.3s ease;
+}
+
+.task-input button:hover {
+    background: #218838;
+}
+
+/* Danh sách công việc */
+.task-list {
+    list-style: none;
+    padding: 0;
+    text-align: left;
+    width: 100%;
+}
+
+.task-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: #e9ecef; /* Màu nền nhẹ hơn để phân biệt */
+    margin: 5px 0;
+    padding: 10px;
+    border-radius: 5px;
+    font-size: 16px;
+    color: #333333; /* Màu chữ đậm để dễ đọc */
+}
+
+.task-item span {
+    flex: 1;
+    padding-left: 10px;
+}

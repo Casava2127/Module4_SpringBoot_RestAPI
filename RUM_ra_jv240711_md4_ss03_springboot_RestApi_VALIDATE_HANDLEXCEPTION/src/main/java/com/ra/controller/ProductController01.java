@@ -10,6 +10,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/v1/products")
@@ -48,8 +49,8 @@ public class ProductController01 {
 
     // Lấy sản phẩm theo ID
     @GetMapping("/get/{id}")
-    public ResponseEntity<ProductResponseDTO> getById(@PathVariable Long id) {
-        ProductResponseDTO product = productService01.findById(id);
+    public ResponseEntity<Optional<ProductResponseDTO>> getById(@PathVariable Long id) {
+        Optional<ProductResponseDTO> product = productService01.findById(id);
         return new ResponseEntity<>(product, HttpStatus.OK);
     }
 }
