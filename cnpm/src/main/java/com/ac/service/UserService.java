@@ -2,16 +2,17 @@ package com.ac.service;
 
 import com.ac.model.entity.User;
 import com.ac.repository.UserRepository;
-import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
 
 @Service
-@RequiredArgsConstructor
 public class UserService {
-    private final UserRepository userRepository;
+
+    @Autowired
+    private UserRepository userRepository;
 
     public List<User> getAllUsers() {
         return userRepository.findAll();
@@ -22,15 +23,15 @@ public class UserService {
     }
 
     public User createUser(User user) {
-        if (userRepository.existsByEmail(user.getEmail())) {
-            throw new RuntimeException("Email đã tồn tại!");
-        }
         return userRepository.save(user);
     }
 
     public User updateUser(Long id, User userDetails) {
-        User user = userRepository.findById(id).orElseThrow(() -> new RuntimeException("Không tìm thấy người dùng!"));
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("User not found with id: " + id));
         user.setFullName(userDetails.getFullName());
+        user.setEmail(userDetails.getEmail());
+        user.setPassword(userDetails.getPassword());
         user.setPhoneNumber(userDetails.getPhoneNumber());
         return userRepository.save(user);
     }

@@ -3,7 +3,7 @@ package com.ac.controller;
 import com.ac.model.dto.AttendanceRequest;
 import com.ac.model.dto.AttendanceResponse;
 import com.ac.model.entity.AttendanceStatus;
-import com.ac.service.AttendanceService;
+import com.ac.Note.service.AttendanceService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

@@ -217,12 +217,13 @@ public class UpdateRegistrationStatusRequest {
 ```
 
 **EventManagementController.java** (phần mở rộng cho chức năng approval)
+
 ```java
 package com.ac.controller;
 
 import com.ac.model.dto.UpdateRegistrationStatusRequest;
 import com.ac.model.entity.EventRegistration;
-import com.ac.service.EventManagementService;
+import com.ac.Note.service.EventManagementService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -232,21 +233,21 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api/v1")
 public class EventManagementController {
 
-    @Autowired 
+    @Autowired
     private EventManagementService service;
-    
+
     // --- Các endpoint khác đã có cho Users, Events, v.v.
-    
+
     // -------------------------- Đăng ký sự kiện --------------------------
     // Endpoint CRUD đã có:
     // @GetMapping("/registrations")
     // @PostMapping("/registrations")
     // @PutMapping("/registrations/{id}")
     // @DeleteMapping("/registrations/{id}")
-    
+
     // -------------------------- Duyệt/Từ chối đăng ký sự kiện --------------------------
     @PutMapping("/registrations/{id}/approval")
-    public ResponseEntity<?> updateRegistrationStatus(@PathVariable Long id, 
+    public ResponseEntity<?> updateRegistrationStatus(@PathVariable Long id,
                                                       @RequestBody UpdateRegistrationStatusRequest request) {
         try {
             EventRegistration updatedRegistration = service.updateRegistrationStatus(id, request.getStatus());
@@ -499,7 +500,7 @@ package com.ac.controller;
 
 import com.ac.model.dto.ApprovalRequest;
 import com.ac.model.entity.Event;
-import com.ac.service.EventService;
+import com.ac.Note.service.EventService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -690,7 +691,7 @@ Thêm endpoint mới để lấy danh sách sinh viên tham gia cho một sự k
 package com.ac.controller;
 
 import com.ac.model.entity.User;
-import com.ac.service.EventManagementService;
+import com.ac.Note.service.EventManagementService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -701,7 +702,7 @@ import java.util.List;
 @RequestMapping("/api/v1")
 public class EventManagementController {
 
-    @Autowired 
+    @Autowired
     private EventManagementService service;
 
     // Các endpoint khác...

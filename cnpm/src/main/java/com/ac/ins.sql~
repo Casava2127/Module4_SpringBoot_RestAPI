@@ -1,4 +1,3 @@
-use communityactivitydb2;
 INSERT INTO Users (email, password, full_name, phone_number, role) VALUES
                                                                        ('admin@example.com', 'admin123', 'Admin User', '0123456789', 'ADMIN'),
                                                                        ('giangvien1@example.com', 'password123', 'Giảng Viên A', '0987654321', 'GIANG_VIEN'),

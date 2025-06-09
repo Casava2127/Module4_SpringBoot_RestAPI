@@ -1,6 +1,5 @@
 package com.ac.service;
 
-import com.ac.model.dto.AttendanceRequest;
 import com.ac.model.dto.AttendanceResponse;
 import com.ac.model.entity.*;
 import com.ac.repository.AttendanceRepository;

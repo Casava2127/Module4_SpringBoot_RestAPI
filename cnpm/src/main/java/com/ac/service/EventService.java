@@ -1,50 +1,76 @@
 package com.ac.service;
 
-import com.ac.model.entity.Event;
+import com.ac.model.entity.*;
+import com.ac.repository.AttendanceRepository;
+import com.ac.repository.EventRegistrationRepository;
 import com.ac.repository.EventRepository;
-import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Service
-@RequiredArgsConstructor
 public class EventService {
 
-    private final EventRepository eventRepository;
+    @Autowired
+    private EventRepository eventRepository;
+    @Autowired
+    private EventRegistrationRepository eventRegistrationRepository;
+    @Autowired
+    private AttendanceRepository attendanceRepository;
 
-    // Lấy danh sách tất cả sự kiện
     public List<Event> getAllEvents() {
         return eventRepository.findAll();
     }
 
-    // Lấy sự kiện theo ID
     public Optional<Event> getEventById(Long id) {
         return eventRepository.findById(id);
     }
 
-    // Tạo mới sự kiện
     public Event createEvent(Event event) {
         return eventRepository.save(event);
     }
 
-    // Cập nhật sự kiện theo ID
     public Event updateEvent(Long id, Event eventDetails) {
         Event event = eventRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Không tìm thấy sự kiện với id: " + id));
+                .orElseThrow(() -> new RuntimeException("Event not found with id: " + id));
         event.setEventName(eventDetails.getEventName());
         event.setDescription(eventDetails.getDescription());
         event.setStartDate(eventDetails.getStartDate());
         event.setEndDate(eventDetails.getEndDate());
         event.setRegistrationDeadline(eventDetails.getRegistrationDeadline());
         event.setStatus(eventDetails.getStatus());
-        // Cập nhật các trường khác nếu cần
         return eventRepository.save(event);
     }
 
-    // Xóa sự kiện theo ID
     public void deleteEvent(Long id) {
         eventRepository.deleteById(id);
+    }
+
+    public Event updateEventApproval(Long eventId, String approvalStatus) {
+        Event event = eventRepository.findById(eventId)
+                .orElseThrow(() -> new RuntimeException("Event not found"));
+        if (!"APPROVED".equalsIgnoreCase(approvalStatus) && !"REJECTED".equalsIgnoreCase(approvalStatus)) {
+            throw new IllegalArgumentException("Invalid status. Allowed values: APPROVED or REJECTED");
+        }
+        event.setStatus(EventStatus.valueOf(approvalStatus.toUpperCase()));
+        return eventRepository.save(event);
+    }
+
+    public List<User> getEventParticipants(Long eventId) {
+        List<EventRegistration> registrations = eventRegistrationRepository.findByEvent_EventId(eventId);
+        List<Attendance> attendances = attendanceRepository.findByEvent_EventId(eventId);
+        Set<User> participants = new HashSet<>();
+        for (EventRegistration reg : registrations) {
+            if ("APPROVED".equalsIgnoreCase(String.valueOf(reg.getStatus()))) {
+                participants.add(reg.getStudent());
+            }
+        }
+        for (Attendance att : attendances) {
+            if (att.getStatus() == AttendanceStatus.APPROVED) {
+                participants.add(att.getStudent());
+            }
+        }
+        return new ArrayList<>(participants);
     }
 }

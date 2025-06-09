@@ -1,27 +1,57 @@
 package com.ac.service;
 
 import com.ac.model.dto.StatisticsReportResponse;
-import com.ac.model.entity.Attendance;
 import com.ac.model.entity.AttendanceStatus;
 import com.ac.model.entity.Certificate;
 import com.ac.model.entity.EventScore;
+import com.ac.model.entity.Report;
 import com.ac.repository.AttendanceRepository;
 import com.ac.repository.CertificateRepository;
 import com.ac.repository.EventScoreRepository;
-import lombok.RequiredArgsConstructor;
+import com.ac.repository.ReportRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 @Service
-@RequiredArgsConstructor
 public class ReportService {
 
-    private final AttendanceRepository attendanceRepository;
-    private final CertificateRepository certificateRepository;
-    private final EventScoreRepository eventScoreRepository;
+
+    @Autowired
+    private ReportRepository reportRepository;
+    private  AttendanceRepository attendanceRepository;
+    private  CertificateRepository certificateRepository;
+    private  EventScoreRepository eventScoreRepository;
+
+
+
+
+    public List<Report> getAllReports() {
+        return reportRepository.findAll();
+    }
+
+    public Optional<Report> getReportById(Long id) {
+        return reportRepository.findById(id);
+    }
+
+    public Report createReport(Report report) {
+        return reportRepository.save(report);
+    }
+
+    public Report updateReport(Long id, Report details) {
+        Report rep = reportRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Report not found with id: " + id));
+        rep.setReportContent(details.getReportContent());
+        return reportRepository.save(rep);
+    }
+
+    public void deleteReport(Long id) {
+        reportRepository.deleteById(id);
+    }
 
     public StatisticsReportResponse getCommunityActivityStatistics() {
         // Đếm điểm danh theo trạng thái

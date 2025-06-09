@@ -1,11 +1,10 @@
 package com.ac.service;
 
-import com.ac.model.dto.ChangePasswordRequest;
-import com.ac.model.dto.LoginRequest;
-import com.ac.model.dto.RegistrationRequest;
+import com.ac.model.dto.*;
 import com.ac.model.entity.RoleType;
 import com.ac.model.entity.User;
 import com.ac.repository.UserRepository;
+import com.ac.security.JwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -16,32 +15,55 @@ public class AuthService {
 
     @Autowired
     private UserRepository userRepository;
+    @Autowired
+    private JwtUtil jwtUtil;
+
 
     // Đăng nhập: Kiểm tra email và so sánh mật khẩu (plain text)
-    public User login(LoginRequest request) {
+    public LoginResponse login(LoginRequest request) {
         Optional<User> userOpt = userRepository.findByEmail(request.getEmail());
         if (userOpt.isPresent()) {
             User user = userOpt.get();
+            // So sánh mật khẩu hiện tại (plain text)
             if (user.getPassword().equals(request.getPassword())) {
-                return user; // Có thể trả về token nếu tích hợp JWT
+                // Tạo token dựa trên email hoặc id
+                String token = jwtUtil.generateToken(user.getEmail());
+                return new LoginResponse(
+                        user.getEmail(),
+                        token,
+                        user.getFullName(),
+                        user.getRole().name());
             }
         }
-        return null; // Hoặc ném exception tùy theo cách xử lý
+        return null;  // Hoặc có thể ném exception
     }
 
+
     // Đăng ký: Kiểm tra email trùng và lưu mới (mật khẩu không được mã hóa)
-    public User register(RegistrationRequest request) {
+    public RegisterResponse register(RegistrationRequest request) {
         if (userRepository.findByEmail(request.getEmail()).isPresent()) {
             throw new RuntimeException("Email đã được sử dụng");
         }
-        User user = new User();
-        user.setEmail(request.getEmail());
-        user.setFullName(request.getFullName());
-        user.setPhoneNumber(request.getPhoneNumber());
-        user.setPassword(request.getPassword());
-        // Đặt role mặc định là SINH_VIEN (có thể điều chỉnh theo yêu cầu)
-        user.setRole(RoleType.valueOf("SINH_VIEN"));
-        return userRepository.save(user);
+        // Kiểm tra role nếu có
+        RoleType role = RoleType.SINH_VIEN; // mặc định
+        if (request.getRole() != null && !request.getRole().isBlank()) {
+            try {
+                role = RoleType.valueOf(request.getRole().toUpperCase());
+            } catch (IllegalArgumentException e) {
+                throw new RuntimeException("Vai trò không hợp lệ: " + request.getRole());
+            }
+        }
+        User user = User.builder()
+                .email(request.getEmail())
+                .fullName(request.getFullName())
+                .phoneNumber(request.getPhoneNumber())
+                .password(request.getPassword()) // ⚠️ nhớ hash ở bước thực tế
+                .role(role)
+                .build();
+        userRepository.save(user);
+        String token = jwtUtil.generateToken(user.getEmail());
+
+        return new RegisterResponse(token, user.getUserId(), user.getFullName(), user.getEmail(), user.getRole().name(), user.getCreatedAt());
     }
 
     // Thay đổi mật khẩu: Xác thực mật khẩu cũ rồi cập nhật mới (plain text)

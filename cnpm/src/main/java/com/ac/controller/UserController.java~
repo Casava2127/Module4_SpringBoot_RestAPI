@@ -1,7 +1,7 @@
 package com.ac.controller;
 
 import com.ac.model.entity.User;
-import com.ac.service.UserService;
+import com.ac.Note.service.EventManagementService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -13,7 +13,7 @@ import java.util.Optional;
 public class UserController {
 
     @Autowired
-    private UserService service;
+    private EventManagementService service;
 
     @GetMapping
     public List<User> getAllUsers() {
